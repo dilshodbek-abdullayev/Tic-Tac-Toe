@@ -1,41 +1,58 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QLabel,QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QLabel,QPushButton,QLineEdit
 from PyQt5.QtCore import QTimer
 # from PyQt5.QtCore import QTimer
 
 class Game(QWidget):
-    def __init__(self,size):
+    def __init__(self):
         super().__init__()
 
-        self.size = size
 
-        self.setWindowTitle("Game Puzzle")
+        self.setWindowTitle("Game Tic Tac Toe")
         self.setStyleSheet('font-size: 30px')
         self.__initUI()
         self.show()
         # self.showMaximized()
 
     def __initUI(self):
-        timer = QTimer(self)
-        timer.timeout.connect(self.show_time)
-        timer.start(100)
+        self.v_box = QVBoxLayout()
+        self.h_box_bottom = QVBoxLayout()
+        self.h_box_top = QHBoxLayout()
+        self.grid = QGridLayout()
+        self.edit_name_win = QLineEdit("Winner")
 
-        self.label_time = QLabel('Time: 0 s')
-        self.label_moves = QLabel('Moves: 0')
+        self.btn_restart = QPushButton("Restart")
+        self.btn_quit = QPushButton("Quit")
 
-        self.btn_restart = QPushButton('Restart')
-        self.btn_toggle = QPushButton('Pause')
+        self.btn_restart.clicked.connect(self.def_restart)
+        # self.btn_quit.clicked.connect(self.def_quit)
 
-        self.btn_toggle.clicked.connect(self.start_action)
-        self.btn_restart.clicked.connect(self.show_restart)
+        self.h_box_top.addWidget(self.btn_restart)
+        self.h_box_top.addStretch()
+        self.h_box_top.addWidget(self.btn_quit)
+        
+        self.h_box_bottom.addWidget(self.edit_name_win)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.label_time)
-        layout.addWidget(self.label_moves)
-        layout.addWidget(self.btn_toggle)
+        self.v_box.addLayout(self.h_box_top)
+        self.v_box.addLayout(self.grid)
+        self.v_box.addLayout(self.h_box_bottom)
+
+        self.setLayout(self.v_box)
+
+        self.def_restart()
+
+    def def_restart(self):
+        self.matrix = list()
+        i = 0
+
+        for x in range(3):
+            for y in range(3):
+                self.grid.addWidget(QPushButton(" "),x,y)
+
 
 app = QApplication(sys.argv)
 
-win = Game(3)
-app.exec_()
+win = Game()
+win.show()
+sys.exit(app.exec_())
